@@ -63,10 +63,17 @@ class DashboardViewModel(
         assignmentRepository.error,
         examRepository.error,
         projectRepository.error
-    ) { assignments: List<Assignment>, exams: List<Exam>, projects: List<Project>,
-        assignmentLoading: Boolean, examLoading: Boolean, projectLoading: Boolean,
-        assignmentError: String?, examError: String?, projectError: String? ->
-        
+    ) { flows ->
+        val assignments = flows[0] as List<Assignment>
+        val exams = flows[1] as List<Exam>
+        val projects = flows[2] as List<Project>
+        val assignmentLoading = flows[3] as Boolean
+        val examLoading = flows[4] as Boolean
+        val projectLoading = flows[5] as Boolean
+        val assignmentError = flows[6] as String?
+        val examError = flows[7] as String?
+        val projectError = flows[8] as String?
+
         when {
             assignmentError != null || examError != null || projectError != null -> {
                 val errorMessage = listOfNotNull(assignmentError, examError, projectError).firstOrNull()
@@ -74,14 +81,14 @@ class DashboardViewModel(
             }
             assignmentLoading || examLoading || projectLoading -> DashboardUiState.Loading
             else -> {
-                val dashboardStats = runCatching { 
-                    getDashboardOverviewUseCase.invoke() 
+                val dashboardStats = runCatching {
+                    getDashboardOverviewUseCase.invoke()
                 }.getOrNull()
-                
-                val upcomingItems = runCatching { 
-                    getUpcomingItemsUseCase.invoke() 
+
+                val upcomingItems = runCatching {
+                    getUpcomingItemsUseCase.invoke()
                 }.getOrNull() ?: emptyList()
-                
+
                 if (dashboardStats != null) {
                     DashboardUiState.Success(
                         totalAssignments = dashboardStats.totalAssignments,

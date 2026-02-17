@@ -42,7 +42,7 @@ class SheetUrlConfigViewModel(
             try {
                 val config = configRepository.getCurrent()
                 _uiState.value = SheetUrlConfigUiState.Success(
-                    currentUrl = config?.sheetUrl,
+                    currentUrl = config?.googleSheetsUrl,
                     isValidating = false,
                     validationMessage = null
                 )

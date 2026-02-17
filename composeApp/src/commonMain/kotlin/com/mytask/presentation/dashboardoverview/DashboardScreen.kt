@@ -79,7 +79,7 @@ fun DashboardScreen(
                         id = item.id?.toIntOrNull() ?: 0,
                         title = item.title ?: "",
                         subject = item.type ?: "",
-                        dueDate = item.date ?: kotlin.time.Instant.DISTANT_PAST,
+                        dueDate = item.date ?: kotlin.time.Clock.System.now(),
                         completed = false
                     )
                 },
