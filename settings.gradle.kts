@@ -1,4 +1,4 @@
-rootProject.name = "Mismaiti-Template"
+rootProject.name = "BuddyTask"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

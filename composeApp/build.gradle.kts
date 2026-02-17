@@ -98,11 +98,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.mismaiti"
+    namespace = "com.mytask"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.mismaiti"
+        applicationId = "com.mytask"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -144,6 +144,6 @@ room {
 
 compose.resources {
     publicResClass = true
-    packageOfResClass = "com.mismaiti"
+    packageOfResClass = "com.mytask"
     generateResClass = always
 }
