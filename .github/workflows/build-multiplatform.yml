@@ -1,0 +1,160 @@
+name: Build Multiplatform
+
+on:
+  workflow_dispatch:
+    inputs:
+      enable_firebase:
+        description: 'Enable Firebase App Distribution'
+        required: false
+        type: boolean
+        default: false
+      enable_unit_tests:
+        description: 'Enable unit tests'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  build-all:
+    name: Build Android & iOS
+    strategy:
+      matrix:
+        include:
+          - platform: android
+            runner: ubuntu-latest
+          - platform: ios
+            runner: macos-latest
+      fail-fast: false
+
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Android-specific steps
+      - name: Run Android tests
+        if: matrix.platform == 'android' && inputs.enable_unit_tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Build Android APK
+        if: matrix.platform == 'android'
+        run: |
+          ./gradlew assembleDebug
+          ./gradlew assembleRelease
+
+      - name: Upload Android APK
+        if: matrix.platform == 'android'
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apks
+          path: composeApp/build/outputs/apk/**/*.apk
+          retention-days: 30
+
+      # iOS-specific steps
+      - name: Cache CocoaPods
+        if: matrix.platform == 'ios'
+        uses: actions/cache@v3
+        with:
+          path: iosApp/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('iosApp/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install CocoaPods
+        if: matrix.platform == 'ios'
+        run: |
+          cd iosApp
+          if [ -f "Podfile" ]; then
+            pod install --repo-update
+          fi
+
+      - name: Select Xcode
+        if: matrix.platform == 'ios'
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+
+      - name: Run iOS tests
+        if: matrix.platform == 'ios' && inputs.enable_unit_tests
+        run: |
+          cd iosApp
+          xcodebuild test \
+            -workspace iosApp.xcworkspace \
+            -scheme iosApp \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.2'
+
+      - name: Build iOS app
+        if: matrix.platform == 'ios'
+        run: |
+          cd iosApp
+          xcodebuild \
+            -workspace iosApp.xcworkspace \
+            -scheme iosApp \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/iosApp.xcarchive \
+            archive
+
+      - name: Export IPA
+        if: matrix.platform == 'ios'
+        run: |
+          cd iosApp
+          cat > ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>development</string>
+              <key>uploadBitcode</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild \
+            -exportArchive \
+            -archivePath build/iosApp.xcarchive \
+            -exportPath build/ipa \
+            -exportOptionsPlist ExportOptions.plist
+
+      - name: Upload iOS IPA
+        if: matrix.platform == 'ios'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-ipa
+          path: iosApp/build/ipa/*.ipa
+          retention-days: 30
+
+  summary:
+    name: Multiplatform Build Summary
+    needs: build-all
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Build summary
+        run: |
+          echo "## 📱 Multiplatform Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Android Build: ${{ needs.build-all.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- iOS Build: ${{ needs.build-all.result }}" >> $GITHUB_STEP_SUMMARY

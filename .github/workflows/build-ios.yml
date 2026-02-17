@@ -1,0 +1,193 @@
+name: Build iOS
+
+on:
+  workflow_call:
+    inputs:
+      enable_firebase:
+        description: 'Enable Firebase App Distribution'
+        required: false
+        type: boolean
+        default: false
+      enable_unit_tests:
+        description: 'Enable unit tests'
+        required: false
+        type: boolean
+        default: true
+      tester_groups:
+        description: 'Firebase App Distribution tester groups (comma-separated)'
+        required: false
+        type: string
+        default: 'testers'
+    secrets:
+      FIREBASE_TOKEN:
+        required: false
+      FIREBASE_APP_ID_IOS:
+        required: false
+
+jobs:
+  build:
+    name: iOS Build
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Cache CocoaPods
+        uses: actions/cache@v3
+        with:
+          path: iosApp/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('iosApp/Podfile.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
+      - name: Install CocoaPods dependencies
+        run: |
+          cd iosApp
+          if [ -f "Podfile" ]; then
+            pod install --repo-update
+          else
+            echo "⚠️  No Podfile found, skipping pod install"
+          fi
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.2.app/Contents/Developer
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Run unit tests
+        if: inputs.enable_unit_tests
+        run: |
+          cd iosApp
+          xcodebuild test \
+            -workspace iosApp.xcworkspace \
+            -scheme iosApp \
+            -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.2' \
+            -resultBundlePath TestResults.xcresult \
+            | xcpretty --color --simple
+        continue-on-error: false
+
+      - name: Build iOS app (Debug)
+        run: |
+          cd iosApp
+          xcodebuild \
+            -workspace iosApp.xcworkspace \
+            -scheme iosApp \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/iosApp-Debug.xcarchive \
+            archive \
+            | xcpretty --color --simple
+
+      - name: Export IPA (Debug)
+        run: |
+          cd iosApp
+
+          # Create export options plist
+          cat > ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>development</string>
+              <key>teamID</key>
+              <string>\${DEVELOPMENT_TEAM}</string>
+              <key>uploadBitcode</key>
+              <false/>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>compileBitcode</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild \
+            -exportArchive \
+            -archivePath build/iosApp-Debug.xcarchive \
+            -exportPath build/ipa \
+            -exportOptionsPlist ExportOptions.plist \
+            | xcpretty --color --simple
+
+      - name: Get IPA info
+        id: ipa_info
+        run: |
+          IPA_FILE=$(find iosApp/build/ipa -name "*.ipa" | head -n 1)
+
+          if [ -f "$IPA_FILE" ]; then
+            IPA_SIZE=$(du -h "$IPA_FILE" | cut -f1)
+            echo "ipa_path=$IPA_FILE" >> $GITHUB_OUTPUT
+            echo "ipa_size=$IPA_SIZE" >> $GITHUB_OUTPUT
+            echo "✓ IPA: $IPA_SIZE"
+          else
+            echo "⚠️  No IPA file found"
+          fi
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        if: steps.ipa_info.outputs.ipa_path != ''
+        with:
+          name: app-ios-debug
+          path: ${{ steps.ipa_info.outputs.ipa_path }}
+          retention-days: 30
+
+      - name: Distribute to Firebase (iOS)
+        if: inputs.enable_firebase && steps.ipa_info.outputs.ipa_path != ''
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
+          token: ${{ secrets.FIREBASE_TOKEN }}
+          groups: ${{ inputs.tester_groups }}
+          file: ${{ steps.ipa_info.outputs.ipa_path }}
+          releaseNotes: |
+            Build from commit: ${{ github.sha }}
+            Branch: ${{ github.ref_name }}
+            Workflow: ${{ github.workflow }}
+            Run: ${{ github.run_number }}
+
+      - name: Build summary
+        if: always()
+        run: |
+          echo "## 🍎 iOS Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -n "${{ steps.ipa_info.outputs.ipa_path }}" ]; then
+            echo "✅ **IPA:** ${{ steps.ipa_info.outputs.ipa_size }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️  **IPA:** Not generated" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tests:** ${{ inputs.enable_unit_tests && '✓ Enabled' || '⊘ Disabled' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Firebase Distribution:** ${{ inputs.enable_firebase && '✓ Enabled' || '⊘ Disabled' }}" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload test results
+        if: inputs.enable_unit_tests && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-test-results
+          path: iosApp/TestResults.xcresult
+          retention-days: 7
