@@ -10,6 +10,7 @@ import com.mytask.domain.model.AppConfig
 import com.mytask.data.remote.SheetsApiService
 import kotlinx.coroutines.flow.update
 import kotlin.time.Instant
+import kotlin.time.Clock
 
 class AppConfigRepositoryImpl(
     private val dao: AppConfigDao,
@@ -30,8 +31,8 @@ class AppConfigRepositoryImpl(
         val config = AppConfig(
             id = 0,
             googleSheetsUrl = url,
-            createdAt = Instant.now(),
-            updatedAt = Instant.now()
+            createdAt = Clock.System.now(),
+            updatedAt = Clock.System.now()
         )
         dao.insert(config.toEntity())
     }

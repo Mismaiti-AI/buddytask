@@ -63,9 +63,9 @@ class DashboardViewModel(
         assignmentRepository.error,
         examRepository.error,
         projectRepository.error
-    ) { assignments, exams, projects, 
-        assignmentLoading, examLoading, projectLoading, 
-        assignmentError, examError, projectError ->
+    ) { assignments: List<Assignment>, exams: List<Exam>, projects: List<Project>,
+        assignmentLoading: Boolean, examLoading: Boolean, projectLoading: Boolean,
+        assignmentError: String?, examError: String?, projectError: String? ->
         
         when {
             assignmentError != null || examError != null || projectError != null -> {

@@ -76,10 +76,11 @@ fun DashboardScreen(
                     // Convert upcoming items to a displayable format
                     // This would need to be adapted based on the actual structure of UpcomingItem
                     Assignment(
-                        id = item.id ?: 0,
+                        id = item.id?.toIntOrNull() ?: 0,
                         title = item.title ?: "",
                         subject = item.type ?: "",
-                        dueDate = item.date ?: kotlin.time.Instant.DISTANT_PAST
+                        dueDate = item.date ?: kotlin.time.Instant.DISTANT_PAST,
+                        completed = false
                     )
                 },
                 recentTitle = "Upcoming",

@@ -10,6 +10,7 @@ import com.mytask.domain.model.Exam
 import com.mytask.data.remote.SheetsApiService
 import kotlinx.coroutines.flow.update
 import kotlin.time.Instant
+import kotlin.time.Clock
 
 class ExamRepositoryImpl(
     private val dao: ExamDao,
@@ -27,10 +28,10 @@ class ExamRepositoryImpl(
         try {
             // Emit cached data immediately
             _items.value = dao.getAll().map { it.toDomain() }
-            
+
             // Fetch remote in background
             val remote = remoteSource.fetchExams()
-            
+
             // Update cache and emit fresh data
             remote.forEach { dao.insert(it.toEntity()) }
             _items.value = dao.getAll().map { it.toDomain() }
@@ -60,7 +61,7 @@ class ExamRepositoryImpl(
     }
 
     override suspend fun getUpcomingExams(): List<Exam> {
-        val now = Instant.now().toEpochMilliseconds()
+        val now = Clock.System.now().toEpochMilliseconds()
         return dao.getUpcomingExams(now).map { it.toDomain() }
     }
 }

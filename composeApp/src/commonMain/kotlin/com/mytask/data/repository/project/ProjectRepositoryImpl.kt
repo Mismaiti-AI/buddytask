@@ -10,6 +10,7 @@ import com.mytask.domain.model.Project
 import com.mytask.data.remote.SheetsApiService
 import kotlinx.coroutines.flow.update
 import kotlin.time.Instant
+import kotlin.time.Clock
 
 class ProjectRepositoryImpl(
     private val dao: ProjectDao,
@@ -27,10 +28,10 @@ class ProjectRepositoryImpl(
         try {
             // Emit cached data immediately
             _items.value = dao.getAll().map { it.toDomain() }
-            
+
             // Fetch remote in background
             val remote = remoteSource.fetchProjects()
-            
+
             // Update cache and emit fresh data
             remote.forEach { dao.insert(it.toEntity()) }
             _items.value = dao.getAll().map { it.toDomain() }
@@ -65,7 +66,7 @@ class ProjectRepositoryImpl(
     }
 
     override suspend fun getUpcomingProjects(): List<Project> {
-        val now = Instant.now().toEpochMilliseconds()
+        val now = Clock.System.now().toEpochMilliseconds()
         return dao.getUpcomingProjects(now).map { it.toDomain() }
     }
 }

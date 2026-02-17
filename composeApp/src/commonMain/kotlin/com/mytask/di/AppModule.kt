@@ -65,10 +65,10 @@ fun appModule() = module {
     single { get<AppDatabase>().appConfigDao() }
 
     // Repositories
-    singleOf(::AssignmentRepositoryImpl) { bind<AssignmentRepository>() }
-    singleOf(::ExamRepositoryImpl) { bind<ExamRepository>() }
-    singleOf(::ProjectRepositoryImpl) { bind<ProjectRepository>() }
-    singleOf(::AppConfigRepositoryImpl) { bind<AppConfigRepository>() }
+    single<AssignmentRepository> { AssignmentRepositoryImpl(get(), get()) }
+    single<ExamRepository> { ExamRepositoryImpl(get(), get()) }
+    single<ProjectRepository> { ProjectRepositoryImpl(get(), get()) }
+    single<AppConfigRepository> { AppConfigRepositoryImpl(get(), get()) }
 
     // Use Cases
     factoryOf(::GetAssignmentListUseCase)

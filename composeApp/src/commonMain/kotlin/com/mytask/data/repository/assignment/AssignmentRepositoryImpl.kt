@@ -10,6 +10,7 @@ import com.mytask.domain.model.Assignment
 import com.mytask.data.remote.SheetsApiService
 import kotlinx.coroutines.flow.update
 import kotlin.time.Instant
+import kotlin.time.Clock
 
 class AssignmentRepositoryImpl(
     private val dao: AssignmentDao,
@@ -27,10 +28,10 @@ class AssignmentRepositoryImpl(
         try {
             // Emit cached data immediately
             _items.value = dao.getAll().map { it.toDomain() }
-            
+
             // Fetch remote in background
             val remote = remoteSource.fetchAssignments()
-            
+
             // Update cache and emit fresh data
             remote.forEach { dao.insert(it.toEntity()) }
             _items.value = dao.getAll().map { it.toDomain() }
@@ -65,7 +66,7 @@ class AssignmentRepositoryImpl(
     }
 
     override suspend fun getUpcomingAssignments(): List<Assignment> {
-        val now = Instant.now().toEpochMilliseconds()
+        val now = Clock.System.now().toEpochMilliseconds()
         return dao.getUpcoming(now).map { it.toDomain() }
     }
 }

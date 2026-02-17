@@ -34,7 +34,7 @@ data class SettingItem(
 )
 
 enum class SettingType {
-    TOGGLE, TEXT, SELECT
+    TOGGLE, TEXT, SELECT, NAVIGATION
 }
 
 class SettingsViewModel(
@@ -79,8 +79,8 @@ class SettingsViewModel(
                     SettingItem(
                         key = "sheet_url",
                         title = "Google Sheet URL",
-                        value = config?.sheetUrl ?: "",
-                        type = SettingType.TEXT
+                        value = config?.googleSheetsUrl ?: "",
+                        type = SettingType.NAVIGATION
                     )
                 )
             )
