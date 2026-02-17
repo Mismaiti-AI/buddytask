@@ -64,7 +64,7 @@ fun <T> GenericDetailScreen(
     onBackClick: () -> Unit = {},
     onEditClick: ((T) -> Unit)? = null,
     onDeleteClick: ((T) -> Unit)? = null,
-    menuActions: List<com.mismaiti.core.presentation.screens.MenuAction<T>> = emptyList(),
+    menuActions: List<com.mytask.core.presentation.screens.MenuAction<T>> = emptyList(),
     headerContent: (@Composable (T) -> Unit)? = null,
     detailContent: @Composable (T) -> Unit
 ) {

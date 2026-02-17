@@ -155,7 +155,7 @@ object Routes {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScaffold(
-    tabs: List<com.mismaiti.core.presentation.navigation.NavigationTab>,
+    tabs: List<NavigationTab>,
     startDestination: Any,
     showTopBar: Boolean = true,
     builder: androidx.navigation.NavGraphBuilder.(NavHostController) -> Unit

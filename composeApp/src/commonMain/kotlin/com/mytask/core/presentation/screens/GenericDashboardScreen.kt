@@ -57,8 +57,8 @@ import com.mytask.core.presentation.components.StatCard
 fun <T> GenericDashboardScreen(
     title: String,
     greeting: String? = null,
-    stats: List<com.mismaiti.core.presentation.screens.DashboardStat> = emptyList(),
-    quickActions: List<com.mismaiti.core.presentation.screens.QuickAction> = emptyList(),
+    stats: List<com.mytask.core.presentation.screens.DashboardStat> = emptyList(),
+    quickActions: List<com.mytask.core.presentation.screens.QuickAction> = emptyList(),
     isLoading: Boolean = false,
     onSettingsClick: (() -> Unit)? = null,
     onNotificationsClick: (() -> Unit)? = null,

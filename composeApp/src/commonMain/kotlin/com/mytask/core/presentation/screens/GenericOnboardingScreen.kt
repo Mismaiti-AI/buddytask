@@ -62,7 +62,7 @@ import kotlinx.coroutines.launch
  */
 @Composable
 fun GenericOnboardingScreen(
-    pages: List<com.mismaiti.core.presentation.screens.OnboardingPage>,
+    pages: List<com.mytask.core.presentation.screens.OnboardingPage>,
     onFinish: () -> Unit,
     onSkip: (() -> Unit)? = null,
     finishText: String = "Get Started",
@@ -159,7 +159,7 @@ fun GenericOnboardingScreen(
 
 @Composable
 private fun OnboardingPageContent(
-    page: com.mismaiti.core.presentation.screens.OnboardingPage,
+    page: com.mytask.core.presentation.screens.OnboardingPage,
     customContent: (@Composable () -> Unit)?
 ) {
     Column(

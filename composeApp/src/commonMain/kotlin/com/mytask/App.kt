@@ -5,6 +5,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import org.koin.compose.KoinApplication
+import org.koin.core.KoinApplication as KoinAppDeclaration
 
 // Pre-built navigation from core/
 import com.mytask.core.presentation.navigation.AppOrchestrator
@@ -24,10 +26,12 @@ import com.mytask.presentation.projecttracking.ProjectDetailScreen
 import com.mytask.presentation.dashboardoverview.DashboardScreen
 import com.mytask.presentation.googlesheetsconfiguration.SettingsScreen
 import com.mytask.presentation.googlesheetsconfiguration.SheetUrlConfigScreen
-import com.mytask.core.presentation.components.GenericSplashScreen
+import com.mytask.core.presentation.screens.GenericSplashScreen
+import com.mytask.presentation.theme.AppTheme
+import com.mytask.di.moduleList
 
 @Composable
-fun App(koinAppDeclaration: KoinAppDeclaration? = null) {
+fun App(koinAppDeclaration: ((KoinAppDeclaration) -> Unit)? = null) {
     KoinApplication(application = {
         modules(moduleList())
         koinAppDeclaration?.invoke(this)

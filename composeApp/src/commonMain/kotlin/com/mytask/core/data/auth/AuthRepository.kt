@@ -124,7 +124,7 @@ class AuthRepository(
         // NOTE: This is NOT authenticated. The user's name/email come directly from
         // Google/Apple without server-side verification. Fine for prototyping or
         // local-only apps, but add a SocialAuthBackendHandler for production auth.
-        val existing = database.userDao.getByProviderId(providerName, authResult.id)
+        val existing = database.userDao().getByProviderId(providerName, authResult.id)
         if (existing != null) {
             return SocialSignInResult.Success(existing)
         }
@@ -138,7 +138,7 @@ class AuthRepository(
     }
 
     fun getUserByProviderId(provider: String, providerUserId: String): UserEntity? {
-        return database.userDao.getByProviderId(provider, providerUserId)
+        return database.userDao().getByProviderId(provider, providerUserId)
     }
 
     private fun saveUser(
@@ -153,9 +153,9 @@ class AuthRepository(
             this.authProvider = providerName
             this.providerUserId = providerUserId
         }
-        database.userDao.insert(user)
+        database.userDao().insert(user)
 
-        val saved = database.userDao.getByProviderId(providerName, providerUserId)
+        val saved = database.userDao().getByProviderId(providerName, providerUserId)
         return if (saved != null) {
             SocialSignInResult.Success(saved)
         } else {

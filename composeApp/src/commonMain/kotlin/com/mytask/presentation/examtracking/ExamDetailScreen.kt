@@ -3,6 +3,7 @@ package com.mytask.presentation.examtracking
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Event
@@ -26,6 +27,10 @@ fun ExamDetailScreen(
     onEditClick: (String) -> Unit = {},
     onDeleteClick: (String) -> Unit = {}
 ) {
+    LaunchedEffect(examId) {
+        viewModel.loadExam(examId)
+    }
+
     val uiState by viewModel.uiState.collectAsState()
     
     when (val state = uiState) {

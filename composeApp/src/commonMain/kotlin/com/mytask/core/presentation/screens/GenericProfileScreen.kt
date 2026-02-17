@@ -78,8 +78,8 @@ fun GenericProfileScreen(
     onBackClick: () -> Unit = {},
     onEditClick: (() -> Unit)? = null,
     showBack: Boolean = true,
-    stats: List<com.mismaiti.core.presentation.screens.ProfileStat> = emptyList(),
-    menuSections: List<com.mismaiti.core.presentation.screens.ProfileMenuSection> = emptyList(),
+    stats: List<com.mytask.core.presentation.screens.ProfileStat> = emptyList(),
+    menuSections: List<com.mytask.core.presentation.screens.ProfileMenuSection> = emptyList(),
     headerExtraContent: (@Composable () -> Unit)? = null,
     bottomContent: (@Composable () -> Unit)? = null
 ) {
@@ -285,7 +285,7 @@ data class ProfileStat(
 
 data class ProfileMenuSection(
     val title: String? = null,
-    val items: List<com.mismaiti.core.presentation.screens.ProfileMenuItem>
+    val items: List<com.mytask.core.presentation.screens.ProfileMenuItem>
 )
 
 data class ProfileMenuItem(

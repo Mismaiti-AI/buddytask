@@ -11,21 +11,25 @@ import com.mytask.data.local.entity.AppConfigEntity
 import com.mytask.data.local.entity.AssignmentEntity
 import com.mytask.data.local.entity.ExamEntity
 import com.mytask.data.local.entity.ProjectEntity
+import com.mytask.core.data.local.model.UserDao
+import com.mytask.core.data.local.model.UserEntity
 
 @Database(
     entities = [
         AssignmentEntity::class,
         ExamEntity::class,
         ProjectEntity::class,
-        AppConfigEntity::class
+        AppConfigEntity::class,
+        UserEntity::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 @ConstructedBy(AppDatabaseConstructor::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract val assignmentDao: AssignmentDao
-    abstract val examDao: ExamDao
-    abstract val projectDao: ProjectDao
-    abstract val appConfigDao: AppConfigDao
+    abstract fun assignmentDao(): AssignmentDao
+    abstract fun examDao(): ExamDao
+    abstract fun projectDao(): ProjectDao
+    abstract fun appConfigDao(): AppConfigDao
+    abstract fun userDao(): UserDao
 }

@@ -3,6 +3,7 @@ package com.mytask.presentation.assignmenttracking
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -26,6 +27,10 @@ fun AssignmentDetailScreen(
     onEditClick: (String) -> Unit = {},
     onDeleteClick: (String) -> Unit = {}
 ) {
+    LaunchedEffect(assignmentId) {
+        viewModel.loadAssignment(assignmentId)
+    }
+
     val uiState by viewModel.uiState.collectAsState()
     
     when (val state = uiState) {

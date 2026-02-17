@@ -3,6 +3,7 @@ package com.mytask.presentation.projecttracking
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
@@ -27,6 +28,10 @@ fun ProjectDetailScreen(
     onEditClick: (String) -> Unit = {},
     onDeleteClick: (String) -> Unit = {}
 ) {
+    LaunchedEffect(projectId) {
+        viewModel.loadProject(projectId)
+    }
+
     val uiState by viewModel.uiState.collectAsState()
     
     when (val state = uiState) {

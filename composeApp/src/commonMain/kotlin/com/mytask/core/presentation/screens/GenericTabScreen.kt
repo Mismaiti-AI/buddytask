@@ -57,7 +57,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun GenericTabScreen(
     title: String,
-    tabs: List<com.mismaiti.core.presentation.screens.TabItem>,
+    tabs: List<com.mytask.core.presentation.screens.TabItem>,
     onBackClick: () -> Unit = {},
     showBack: Boolean = true,
     initialTab: Int = 0,
@@ -147,7 +147,7 @@ fun GenericTabScreen(
 
 @Composable
 private fun TabContent(
-    tab: com.mismaiti.core.presentation.screens.TabItem,
+    tab: com.mytask.core.presentation.screens.TabItem,
     selected: Boolean,
     onClick: () -> Unit
 ) {

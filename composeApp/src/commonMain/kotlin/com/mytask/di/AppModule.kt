@@ -59,10 +59,10 @@ fun appModule() = module {
     single { AuthRepository(database = get(), backendHandler = getOrNull()) }
 
     // DAOs (from AppDatabase)
-    single { get<AppDatabase>().assignmentDao }
-    single { get<AppDatabase>().examDao }
-    single { get<AppDatabase>().projectDao }
-    single { get<AppDatabase>().appConfigDao }
+    single { get<AppDatabase>().assignmentDao() }
+    single { get<AppDatabase>().examDao() }
+    single { get<AppDatabase>().projectDao() }
+    single { get<AppDatabase>().appConfigDao() }
 
     // Repositories
     singleOf(::AssignmentRepositoryImpl) { bind<AssignmentRepository>() }

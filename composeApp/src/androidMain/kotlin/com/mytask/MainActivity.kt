@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import org.koin.android.ext.koin.androidContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,9 +20,7 @@ class MainActivity : ComponentActivity() {
             Box(
                 modifier = Modifier.fillMaxSize().safeDrawingPadding()
             ) {
-                App {
-                    androidContext(this@MainActivity)
-                }
+                App()
             }
         }
     }

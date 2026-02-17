@@ -42,7 +42,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DetailCard(
     title: String,
-    rows: List<com.mismaiti.core.presentation.components.DetailRow>,
+    rows: List<DetailRow>,
     modifier: Modifier = Modifier,
     icon: ImageVector? = null,
     actionText: String? = null,
