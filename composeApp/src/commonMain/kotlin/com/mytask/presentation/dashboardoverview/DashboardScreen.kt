@@ -76,10 +76,10 @@ fun DashboardScreen(
                     // Convert upcoming items to a displayable format
                     // This would need to be adapted based on the actual structure of UpcomingItem
                     Assignment(
-                        id = item.id?.toIntOrNull() ?: 0,
-                        title = item.title ?: "",
-                        subject = item.type ?: "",
-                        dueDate = item.date ?: kotlin.time.Clock.System.now(),
+                        id = item.id.toIntOrNull() ?: 0,
+                        title = item.title,
+                        subject = item.type,
+                        dueDate = kotlin.time.Instant.fromEpochMilliseconds(item.date),
                         completed = false
                     )
                 },
