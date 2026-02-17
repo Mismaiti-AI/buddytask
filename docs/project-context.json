@@ -1,0 +1,197 @@
+{
+  "app_config": {
+    "connectivity_mode": "both",
+    "name": "BuddyTask",
+    "package": "com.mytask",
+    "purpose": "Track homework and exam dates",
+    "splash_screen": {
+      "branding": "MyTask",
+      "enabled": true,
+      "lottie_url": null
+    }
+  },
+  "features": [
+    {
+      "api_endpoints": [],
+      "description": "View and mark homework assignments as completed",
+      "display_name": "My Assignments",
+      "name": "Assignment Tracking",
+      "priority": "high",
+      "repositories": [],
+      "screens": [
+        {
+          "display_name": "My Assignments",
+          "name": "AssignmentListScreen"
+        },
+        {
+          "display_name": "Assignment Details",
+          "name": "AssignmentDetailScreen"
+        }
+      ],
+      "use_cases": [
+        "GetAssignmentListUsecase",
+        "MarkAssignmentCompleteUsecase",
+        "ViewAssignmentDetailsUsecase"
+      ]
+    },
+    {
+      "api_endpoints": [],
+      "description": "View upcoming exam dates and details",
+      "display_name": "Upcoming Exams",
+      "name": "Exam Tracking",
+      "priority": "high",
+      "repositories": [],
+      "screens": [
+        {
+          "display_name": "Upcoming Exams",
+          "name": "ExamListScreen"
+        },
+        {
+          "display_name": "Exam Details",
+          "name": "ExamDetailScreen"
+        }
+      ],
+      "use_cases": [
+        "GetExamListUsecase",
+        "ViewExamDetailsUsecase"
+      ]
+    },
+    {
+      "api_endpoints": [],
+      "description": "View school project deadlines and progress",
+      "display_name": "School Projects",
+      "name": "Project Tracking",
+      "priority": "medium",
+      "repositories": [],
+      "screens": [
+        {
+          "display_name": "School Projects",
+          "name": "ProjectListScreen"
+        },
+        {
+          "display_name": "Project Details",
+          "name": "ProjectDetailScreen"
+        }
+      ],
+      "use_cases": [
+        "GetProjectListUsecase",
+        "ViewProjectDetailsUsecase"
+      ]
+    },
+    {
+      "api_endpoints": [],
+      "description": "Central overview showing upcoming assignments, exams, and projects with deadlines",
+      "display_name": "Dashboard",
+      "name": "Dashboard Overview",
+      "priority": "high",
+      "repositories": [],
+      "screens": [
+        {
+          "display_name": "Dashboard",
+          "name": "DashboardScreen"
+        }
+      ],
+      "use_cases": [
+        "GetDashboardOverviewUsecase",
+        "GetUpcomingItemsUsecase"
+      ]
+    },
+    {
+      "api_endpoints": [],
+      "description": "Allow users to update the Google Sheets URL to connect to different grade/teacher spreadsheets",
+      "display_name": "Data Source Settings",
+      "name": "Google Sheets Configuration",
+      "priority": "medium",
+      "repositories": [],
+      "screens": [
+        {
+          "display_name": "Settings",
+          "name": "SettingsScreen"
+        },
+        {
+          "display_name": "Data Source",
+          "name": "SheetUrlConfigScreen"
+        }
+      ],
+      "use_cases": [
+        "UpdateGoogleSheetUrlUsecase",
+        "ValidateSheetUrlUsecase",
+        "GetCurrentSheetConfigUsecase"
+      ]
+    }
+  ],
+  "data_models": [
+    {
+      "fields": [
+        "title: String",
+        "description: String",
+        "dueDate: Instant",
+        "subject: String",
+        "completed: Boolean",
+        "priority: String"
+      ],
+      "layer": "domain",
+      "name": "Assignment",
+      "relationships": []
+    },
+    {
+      "fields": [
+        "title: String",
+        "subject: String",
+        "examDate: Instant",
+        "description: String",
+        "preparationStatus: Boolean"
+      ],
+      "layer": "domain",
+      "name": "Exam",
+      "relationships": []
+    },
+    {
+      "fields": [
+        "title: String",
+        "description: String",
+        "startDate: Instant",
+        "dueDate: Instant",
+        "subject: String",
+        "progress: Int",
+        "completed: Boolean"
+      ],
+      "layer": "domain",
+      "name": "Project",
+      "relationships": []
+    },
+    {
+      "fields": [
+        "googleSheetsUrl: String",
+        "createdAt: Instant",
+        "updatedAt: Instant"
+      ],
+      "layer": "domain",
+      "name": "AppConfig",
+      "relationships": []
+    }
+  ],
+  "backend_config": {
+    "config": {
+      "config_type": "configurable",
+      "multi_tenant": true,
+      "script_url": "https://script.google.com/macros/s/AKfycbwfXD_btU-9rMvETi1ue9NfJyRG7Mo91R9p04epR5PwYkjSd-md6LLpwMlAl2P79gO0/exec",
+      "spreadsheet_id": "1PyUHKJl3A77c2NLtew0196RBnK0mog9wjqjW6bC5scg",
+      "spreadsheet_url": "https://docs.google.com/spreadsheets/d/1PyUHKJl3A77c2NLtew0196RBnK0mog9wjqjW6bC5scg/edit"
+    },
+    "type": "google_sheets"
+  },
+  "ui_design": {
+    "colors": [
+      "#2196F3",
+      "#FFFFFF",
+      "#333333",
+      "#4CAF50",
+      "#FF9800"
+    ],
+    "has_dark_mode": true,
+    "has_logo": false,
+    "inspiration": null,
+    "style": "modern/minimal"
+  }
+}
