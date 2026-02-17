@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mytask.domain.model.Assignment
-import java.time.Instant
+import kotlin.time.Instant
 
 @Entity(tableName = "assignments")
 class AssignmentEntity {
@@ -21,7 +21,7 @@ class AssignmentEntity {
             id = id,
             title = title,
             description = description,
-            dueDate = Instant.ofEpochMilli(dueDate),
+            dueDate = Instant.fromEpochMilliseconds(dueDate),
             subject = subject,
             completed = completed,
             priority = priority
@@ -34,7 +34,7 @@ class AssignmentEntity {
                 id = assignment.id
                 title = assignment.title
                 description = assignment.description
-                dueDate = assignment.dueDate.toEpochMilli()
+                dueDate = assignment.dueDate.toEpochMilliseconds()
                 subject = assignment.subject
                 completed = assignment.completed
                 priority = assignment.priority

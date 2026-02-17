@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mytask.domain.model.Project
-import java.time.Instant
+import kotlin.time.Instant
 
 @Entity(tableName = "projects")
 class ProjectEntity {
@@ -22,8 +22,8 @@ class ProjectEntity {
             id = id,
             title = title,
             description = description,
-            startDate = Instant.ofEpochMilli(startDate),
-            dueDate = Instant.ofEpochMilli(dueDate),
+            startDate = Instant.fromEpochMilliseconds(startDate),
+            dueDate = Instant.fromEpochMilliseconds(dueDate),
             subject = subject,
             progress = progress,
             completed = completed
@@ -36,8 +36,8 @@ class ProjectEntity {
                 id = project.id
                 title = project.title
                 description = project.description
-                startDate = project.startDate.toEpochMilli()
-                dueDate = project.dueDate.toEpochMilli()
+                startDate = project.startDate.toEpochMilliseconds()
+                dueDate = project.dueDate.toEpochMilliseconds()
                 subject = project.subject
                 progress = project.progress
                 completed = project.completed

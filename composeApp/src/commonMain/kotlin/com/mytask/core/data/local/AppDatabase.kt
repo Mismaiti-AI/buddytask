@@ -2,7 +2,7 @@ package com.mytask.core.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.mytask.core.di.ConstructedBy
+import androidx.room.ConstructedBy
 import com.mytask.data.local.dao.AppConfigDao
 import com.mytask.data.local.dao.AssignmentDao
 import com.mytask.data.local.dao.ExamDao

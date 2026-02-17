@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mytask.domain.model.Exam
-import java.time.Instant
+import kotlin.time.Instant
 
 @Entity(tableName = "exams")
 class ExamEntity {
@@ -20,7 +20,7 @@ class ExamEntity {
             id = id,
             title = title,
             subject = subject,
-            examDate = Instant.ofEpochMilli(examDate),
+            examDate = Instant.fromEpochMilliseconds(examDate),
             description = description,
             preparationStatus = preparationStatus
         )
@@ -32,7 +32,7 @@ class ExamEntity {
                 id = exam.id
                 title = exam.title
                 subject = exam.subject
-                examDate = exam.examDate.toEpochMilli()
+                examDate = exam.examDate.toEpochMilliseconds()
                 description = exam.description
                 preparationStatus = exam.preparationStatus
             }

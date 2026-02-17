@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mytask.domain.model.AppConfig
-import java.time.Instant
+import kotlin.time.Instant
 
 @Entity(tableName = "app_config")
 class AppConfigEntity {
@@ -17,8 +17,8 @@ class AppConfigEntity {
         return AppConfig(
             id = id,
             googleSheetsUrl = googleSheetsUrl,
-            createdAt = Instant.ofEpochMilli(createdAt),
-            updatedAt = Instant.ofEpochMilli(updatedAt)
+            createdAt = Instant.fromEpochMilliseconds(createdAt),
+            updatedAt = Instant.fromEpochMilliseconds(updatedAt)
         )
     }
 
@@ -27,8 +27,8 @@ class AppConfigEntity {
             return AppConfigEntity().apply {
                 id = config.id
                 googleSheetsUrl = config.googleSheetsUrl
-                createdAt = config.createdAt.toEpochMilli()
-                updatedAt = config.updatedAt.toEpochMilli()
+                createdAt = config.createdAt.toEpochMilliseconds()
+                updatedAt = config.updatedAt.toEpochMilliseconds()
             }
         }
     }
